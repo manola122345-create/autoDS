@@ -20,7 +20,8 @@ export function AuthProvider({ children }) {
     await updateProfile(user, { displayName: `${firstName} ${lastName}` });
     await setDoc(doc(db, "users", user.uid), {
       firstName, lastName, email,
-      plan: "free", createdAt: serverTimestamp(),
+      plan: "pro", // ✅ Tout le monde est Pro par défaut
+      createdAt: serverTimestamp(),
       settings: {
         markupType: "percentage", markupValue: 150,
         notifications: { newOrder: true, lowStock: true, shipment: true, weekly: true }
@@ -42,9 +43,14 @@ export function AuthProvider({ children }) {
       const names = (result.user.displayName || "").split(" ");
       await setDoc(ref, {
         firstName: names[0] || "", lastName: names.slice(1).join(" ") || "",
-        email: result.user.email, plan: "free", createdAt: serverTimestamp(),
+        email: result.user.email,
+        plan: "pro", // ✅ Pro par défaut
+        createdAt: serverTimestamp(),
         settings: { markupType: "percentage", markupValue: 150, notifications: { newOrder: true, lowStock: true, shipment: true, weekly: true } }
       });
+    } else {
+      // Mettre à jour en Pro si l'utilisateur existe déjà
+      await setDoc(ref, { plan: "pro" }, { merge: true });
     }
     return result;
   }
@@ -54,7 +60,11 @@ export function AuthProvider({ children }) {
 
   async function loadProfile(uid) {
     const snap = await getDoc(doc(db, "users", uid));
-    if (snap.exists()) setUserProfile({ id: snap.id, ...snap.data() });
+    if (snap.exists()) {
+      const data = snap.data();
+      // Force plan pro
+      setUserProfile({ id: snap.id, ...data, plan: "pro" });
+    }
   }
 
   useEffect(() => {
