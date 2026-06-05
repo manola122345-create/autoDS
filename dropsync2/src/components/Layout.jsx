@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Settings,
   Bell, Search, Menu, LogOut, X, TrendingUp, Zap, ChevronDown,
-  AlertCircle, RefreshCw, Shield, ShoppingBag
+  AlertCircle, RefreshCw, Shield, ShoppingBag, Plus
 } from "lucide-react";
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { to: "/orders", icon: ShoppingCart, label: "Commandes" },
   { to: "/stores", icon: Store, label: "Boutiques" },
   { to: "/cj", icon: ShoppingBag, label: "CJ Dropshipping" },
+  { to: "/import", icon: Plus, label: "Importer produits" },
   { to: "/analytics", icon: TrendingUp, label: "Analytics" },
   { to: "/automation", icon: Zap, label: "Automation" },
   { to: "/settings", icon: Settings, label: "Paramètres" },

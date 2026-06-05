@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import CJDropshipping from "./pages/CJDropshipping";
+import ImportProducts from "./pages/ImportProducts";
 import { Stores, Analytics, Automation, Settings } from "./pages/OtherPages";
 
 function PrivateRoute({ children }) {
@@ -33,6 +34,7 @@ function AppRoutes() {
       <Route path="/orders" element={<PrivateRoute><Layout><Orders /></Layout></PrivateRoute>} />
       <Route path="/stores" element={<PrivateRoute><Layout><Stores /></Layout></PrivateRoute>} />
       <Route path="/cj" element={<PrivateRoute><Layout><CJDropshipping /></Layout></PrivateRoute>} />
+      <Route path="/import" element={<PrivateRoute><Layout><ImportProducts /></Layout></PrivateRoute>} />
       <Route path="/analytics" element={<PrivateRoute><Layout><Analytics /></Layout></PrivateRoute>} />
       <Route path="/automation" element={<PrivateRoute><Layout><Automation /></Layout></PrivateRoute>} />
       <Route path="/settings" element={<PrivateRoute><Layout><Settings /></Layout></PrivateRoute>} />
