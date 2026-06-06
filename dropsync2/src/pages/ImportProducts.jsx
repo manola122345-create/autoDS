@@ -310,24 +310,49 @@ export default function ImportProducts() {
   const [importData, setImportData] = useState(null);
   const [showManual, setShowManual] = useState(false);
 
+  function detectCat(title) {
+    const t = title.toLowerCase();
+    if (["bluetooth","headphone","earphone","wireless","speaker","charger","laptop","tablet","smartwatch","camera","led","lamp","keyboard","mouse","usb","battery","gaming","drone","screen"].some(k=>t.includes(k))) return "Electronique";
+    if (["sport","fitness","yoga","gym","running","cycling","swim","football","basketball","tennis","exercise","workout","resistance","dumbbell","training","crossfit","pilates"].some(k=>t.includes(k))) return "Sport";
+    if (["fashion","bag","wallet","jewelry","beauty","skincare","perfume","makeup","hair","decor","candle","aroma","diffuser","travel","luggage","sunglasses","bracelet","ring"].some(k=>t.includes(k))) return "Lifestyle";
+    return "Electronique";
+  }
+
   async function handleUrlImport() {
     if (!url.trim()) return toast.error("Entre une URL");
-    if (!url.includes("cjdropshipping.com") && !url.includes("aliexpress.com")) {
-      return toast.error("URL non supportée — utilise CJ Dropshipping ou AliExpress");
-    }
+    const isCJ = url.includes("cjdropshipping.com");
+    const isAli = url.includes("aliexpress.com");
+    if (!isCJ && !isAli) return toast.error("URL non supportée — CJ Dropshipping ou AliExpress seulement");
+
     setLoading(true);
     try {
-      const r = await fetch(`/api/import?url=${encodeURIComponent(url)}`);
-      const data = await r.json();
-      if (data.error) {
-        toast.error(data.error);
-      } else {
-        setImportData(data);
-        setUrl("");
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      const r = await fetch(`/api/import?url=${encodeURIComponent(url)}`, { signal: controller.signal });
+      clearTimeout(timer);
+      if (r.ok) {
+        const data = await r.json();
+        if (!data.error) {
+          setImportData(data);
+          setUrl("");
+          setLoading(false);
+          return;
+        }
       }
-    } catch {
-      toast.error("Erreur de connexion");
-    } finally { setLoading(false); }
+    } catch {}
+
+    // Fallback — ouvre le modal pré-rempli avec ce qu'on sait
+    const source = isCJ ? "CJ Dropshipping" : "AliExpress";
+    const pidMatch = url.match(/\-p\-([a-zA-Z0-9]+)\.html/) || url.match(/[?&]id=([a-zA-Z0-9]+)/);
+    setImportData({
+      source, title: "", image: "", cost: 0,
+      description: "", category: "Electronique", stock: 100,
+      supplier: source, url, cjPid: pidMatch?.[1] || "",
+      note: "Remplis les infos manuellement — l'API récupère les données depuis CJ"
+    });
+    setUrl("");
+    setLoading(false);
+    toast("Remplis les informations du produit 📝");
   }
 
   const tips = [
