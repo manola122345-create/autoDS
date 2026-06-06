@@ -15,6 +15,52 @@ async function getCJToken() {
   return data.data.accessToken;
 }
 
+// Détection automatique de catégorie
+function detectCategory(title, cjCategory) {
+  const text = (title + " " + (cjCategory || "")).toLowerCase();
+
+  const rules = [
+    {
+      cat: "Electronique",
+      keywords: [
+        "phone","headphone","earphone","bluetooth","wireless","speaker","charger",
+        "laptop","computer","tablet","watch","smartwatch","camera","led","light",
+        "lamp","keyboard","mouse","cable","usb","battery","power bank","écouteur",
+        "casque","montre","chargeur","lampe","clavier","enceinte","électronique",
+        "electronic","gadget","tech","wifi","smart","rgb","gaming","drone","tv","screen"
+      ]
+    },
+    {
+      cat: "Sport",
+      keywords: [
+        "sport","fitness","yoga","gym","running","cycling","bike","swim","football",
+        "basketball","tennis","hiking","outdoor","exercise","workout","resistance",
+        "band","dumbbell","weight","protein","jump rope","mat","gloves","shoes",
+        "sportswear","jersey","training","muscle","crossfit","pilates","stretching"
+      ]
+    },
+    {
+      cat: "Lifestyle",
+      keywords: [
+        "lifestyle","fashion","bag","wallet","watch","jewelry","accessory","beauty",
+        "skincare","perfume","makeup","hair","nail","decor","home","candle","aroma",
+        "diffuser","plant","photo","frame","art","travel","luggage","sunglasses",
+        "clothes","shirt","dress","pants","shoes","hat","scarf","bracelet","ring"
+      ]
+    }
+  ];
+
+  // Compte les correspondances pour chaque catégorie
+  const scores = rules.map(r => ({
+    cat: r.cat,
+    score: r.keywords.filter(k => text.includes(k)).length
+  }));
+
+  // Retourne la catégorie avec le score le plus élevé
+  const best = scores.sort((a, b) => b.score - a.score)[0];
+  return best.score > 0 ? best.cat : "Electronique"; // Electronique par défaut
+}
+
 function extractCJPid(url) {
   // Formats: /product/name-p-XXXXX.html ou /product-detail.html?id=XXXXX
   const match1 = url.match(/\-p\-([a-zA-Z0-9]+)\.html/);
@@ -51,13 +97,18 @@ module.exports = async function handler(req, res) {
       }
 
       const p = data.data;
+      const detectedCategory = detectCategory(
+        p.productNameEn || p.productName,
+        p.categoryName
+      );
       return res.status(200).json({
         source: "CJ Dropshipping",
         title: p.productNameEn || p.productName,
         image: p.productImage || p.imgUrl,
         cost: parseFloat(p.sellPrice || p.productPrice || 0),
         description: p.description || "",
-        category: p.categoryName || "Electronique",
+        category: detectedCategory,
+        categoryOriginal: p.categoryName || "",
         stock: p.inventory || 100,
         cjPid: pid,
         supplier: "CJ Dropshipping",
@@ -87,6 +138,7 @@ module.exports = async function handler(req, res) {
       const image = imageMatch?.[1] || "";
       const cost = parseFloat(priceMatch?.[1] || 0);
       const description = descMatch?.[1] || "";
+      const detectedCategory = detectCategory(title, "");
 
       return res.status(200).json({
         source: "AliExpress",
@@ -94,7 +146,7 @@ module.exports = async function handler(req, res) {
         image,
         cost,
         description,
-        category: "Electronique",
+        category: detectedCategory,
         stock: 100,
         supplier: "AliExpress",
         url: decodedUrl,
