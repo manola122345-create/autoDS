@@ -5,6 +5,7 @@ import {
   Link2, Plus, Package, Loader2, X, Save,
   ExternalLink, ShoppingBag, Star, AlertCircle, Check
 } from "lucide-react";
+import ImageGallery from "../components/ui/ImageGallery";
 
 const CATS = ["Electronique", "Sport", "Lifestyle", "Maison", "Mode", "Autre"];
 const SUPPLIERS = ["CJ Dropshipping", "AliExpress", "Zendrop", "Spocket", "Autre"];
@@ -14,6 +15,7 @@ function ImportModal({ data, onClose, onSave }) {
   const [f, setF] = useState({
     title: data.title || "",
     image: data.image || "",
+    images: data.image ? [data.image] : [],
     cost: data.cost || "",
     price: data.cost ? parseFloat((data.cost * 2.5).toFixed(2)) : "",
     stock: data.stock || 100,
@@ -142,11 +144,10 @@ function ImportModal({ data, onClose, onSave }) {
             </div>
           )}
 
-          <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">URL Image</label>
-            <input value={f.image} onChange={e => set("image", e.target.value)} placeholder="https://..."
-              className="w-full border-2 border-gray-100 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-gray-50 focus:bg-white" />
-          </div>
+          <ImageGallery
+            images={f.images}
+            onChange={imgs => setF(p => ({ ...p, images: imgs, image: imgs[0] || "" }))}
+          />
 
           <div>
             <label className="block text-xs font-bold text-gray-600 mb-1.5">Description</label>
@@ -190,7 +191,7 @@ function ImportModal({ data, onClose, onSave }) {
 // ── MODAL AJOUT MANUEL ──
 function ManualModal({ onClose, onSave }) {
   const [f, setF] = useState({
-    title: "", image: "", cost: "", price: "", stock: "100",
+    title: "", image: "", images: [], cost: "", price: "", stock: "100",
     category: "Electronique", description: "", supplier: "CJ Dropshipping",
     status: "draft", badge: ""
   });
@@ -261,12 +262,10 @@ function ManualModal({ onClose, onSave }) {
               <div className="flex-1"><p className="text-xs text-green-500 mb-1">Marge</p><p className="text-xl font-black text-green-700">{(((parseFloat(f.price)-parseFloat(f.cost))/parseFloat(f.price))*100).toFixed(0)}%</p></div>
             </div>
           )}
-          <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">URL Image (copie depuis CJ/AliExpress)</label>
-            <input value={f.image} onChange={e => set("image", e.target.value)} placeholder="https://..."
-              className="w-full border-2 border-gray-100 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-gray-50 focus:bg-white" />
-            {f.image && <img src={f.image} alt="" className="w-16 h-16 object-cover rounded-xl mt-2 border border-gray-200" />}
-          </div>
+          <ImageGallery
+            images={f.images}
+            onChange={imgs => setF(p => ({ ...p, images: imgs, image: imgs[0] || "" }))}
+          />
           <div>
             <label className="block text-xs font-bold text-gray-600 mb-1.5">Description</label>
             <textarea value={f.description} onChange={e => set("description", e.target.value)} rows={3}
