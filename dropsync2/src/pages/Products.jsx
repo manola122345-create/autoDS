@@ -7,17 +7,17 @@ import {
 } from "lucide-react";
 
 const SUPPLIERS = ["AliExpress", "CJ Dropshipping", "Zendrop", "Spocket", "DSers", "Autre"];
-const CATEGORIES = ["Electronics", "Fashion", "Home", "Sports", "Beauty", "Automotive", "Furniture", "Toys", "Other"];
+const CATEGORIES = ["Electronique", "Sport", "Lifestyle", "Maison", "Mode", "Autre"];
 
 const supplierCatalog = [
-  { title: "Gaming Mechanical Keyboard RGB", supplier: "AliExpress", cost: 28.00, rating: 4.8, orders: 1250, image: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=80&q=80", category: "Electronics" },
-  { title: "Bluetooth Speaker Waterproof", supplier: "CJ Dropshipping", cost: 16.50, rating: 4.6, orders: 890, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=80&q=80", category: "Electronics" },
-  { title: "Car Phone Holder Dashboard", supplier: "AliExpress", cost: 5.00, rating: 4.9, orders: 3400, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&q=80", category: "Automotive" },
-  { title: "Stainless Steel Water Bottle", supplier: "Zendrop", cost: 9.00, rating: 4.7, orders: 2100, image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=80&q=80", category: "Sports" },
-  { title: "Resistance Bands Set 5pcs", supplier: "CJ Dropshipping", cost: 11.00, rating: 4.5, orders: 1800, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=80&q=80", category: "Sports" },
+  { title: "Gaming Mechanical Keyboard RGB", supplier: "AliExpress", cost: 28.00, rating: 4.8, orders: 1250, image: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=80&q=80", category: "Electronique" },
+  { title: "Bluetooth Speaker Waterproof", supplier: "CJ Dropshipping", cost: 16.50, rating: 4.6, orders: 890, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=80&q=80", category: "Electronique" },
+  { title: "Car Phone Holder Dashboard", supplier: "AliExpress", cost: 5.00, rating: 4.9, orders: 3400, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&q=80", category: "Electronique" },
+  { title: "Stainless Steel Water Bottle", supplier: "Zendrop", cost: 9.00, rating: 4.7, orders: 2100, image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=80&q=80", category: "Sport" },
+  { title: "Resistance Bands Set 5pcs", supplier: "CJ Dropshipping", cost: 11.00, rating: 4.5, orders: 1800, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=80&q=80", category: "Sport" },
   { title: "LED String Lights 10m", supplier: "AliExpress", cost: 7.50, rating: 4.8, orders: 4200, image: "https://images.unsplash.com/photo-1549122728-f519709caa9c?w=80&q=80", category: "Home" },
-  { title: "Wireless Charging Pad 15W", supplier: "CJ Dropshipping", cost: 12.00, rating: 4.7, orders: 980, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=80&q=80", category: "Electronics" },
-  { title: "Yoga Mat Anti-Slip Premium", supplier: "Spocket", cost: 18.00, rating: 4.6, orders: 1500, image: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=80&q=80", category: "Sports" },
+  { title: "Wireless Charging Pad 15W", supplier: "CJ Dropshipping", cost: 12.00, rating: 4.7, orders: 980, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=80&q=80", category: "Electronique" },
+  { title: "Yoga Mat Anti-Slip Premium", supplier: "Spocket", cost: 18.00, rating: 4.6, orders: 1500, image: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=80&q=80", category: "Sport" },
 ];
 
 function Badge({ status }) {
@@ -31,7 +31,7 @@ function Badge({ status }) {
 }
 
 function AddModal({ onClose, onSave }) {
-  const [f, setF] = useState({ title: "", supplier: "AliExpress", cost: "", price: "", stock: "", category: "Electronics", status: "draft", image: "" });
+  const [f, setF] = useState({ title: "", supplier: "AliExpress", cost: "", price: "", stock: "", category: "Electronique", status: "draft", image: "" });
   const [saving, setSaving] = useState(false);
   const profit = f.cost && f.price ? (parseFloat(f.price) - parseFloat(f.cost)).toFixed(2) : null;
   const margin = f.cost && f.price ? (((parseFloat(f.price) - parseFloat(f.cost)) / parseFloat(f.price)) * 100).toFixed(1) : null;
